@@ -13,8 +13,7 @@ const https = require('https');
 const http = require('http');
 
 const app = express();
-const dotenv = require('dotenv');
-dotenv.config();
+const dotenv = require('dotenv').config({path: "./local/.env"});
 
 const port = process.env.PORT;
 
@@ -52,12 +51,11 @@ const connectionManagers = examples.reduce((connectionManagers, example) => {
   return connectionManagers.set(example, connectionManager);
 }, new Map());
 
-const privkey = '/etc/letsencrypt/live/030fd55b.nip.io/privkey.pem'
-const certif = '/etc/letsencrypt/live/030fd55b.nip.io/fullchain.pem'
+console.log(process.env.CERTIFICATE_PATH);
 
 const options = {
-  key: readFileSync(process.env.PRIVATE_KEY_PATH),
-  cert: readFileSync(process.env.CERTIFICATE_PATH),
+  key: readFileSync(process.env.PRIVATE_KEY_PATH, {encoding: "utf-8"}),
+  cert: readFileSync(process.env.CERTIFICATE_PATH, {encoding: "utf-8"}),
 };
 
 const server = https.createServer(options, app);
@@ -80,7 +78,7 @@ const redirServer = http.createServer((req, res) => {
   res.end();
 });
 
-redirServer.listen(80, () => {
+redirServer.listen(8080, () => {
   console.log(`Server running at http://localhost:80/`);
 });
 
