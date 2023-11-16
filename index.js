@@ -52,9 +52,6 @@ const connectionManagers = examples.reduce((connectionManagers, example) => {
   return connectionManagers.set(example, connectionManager);
 }, new Map());
 
-const privkey = '/etc/letsencrypt/live/030fd55b.nip.io/privkey.pem'
-const certif = '/etc/letsencrypt/live/030fd55b.nip.io/fullchain.pem'
-
 const options = {
   key: readFileSync(process.env.PRIVATE_KEY_PATH),
   cert: readFileSync(process.env.CERTIFICATE_PATH),
