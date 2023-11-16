@@ -45,6 +45,9 @@ jspm_packages/
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
 
+# Local files (.env + certificates)
+local/
+
 # TypeScript cache
 *.tsbuildinfo
 
@@ -128,3 +131,6 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# package stuff that doesn't need to be pushed
+# actually I'll just set this as a placeholder
