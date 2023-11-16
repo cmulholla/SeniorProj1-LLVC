@@ -51,8 +51,6 @@ const connectionManagers = examples.reduce((connectionManagers, example) => {
   return connectionManagers.set(example, connectionManager);
 }, new Map());
 
-console.log(process.env.CERTIFICATE_PATH);
-
 const options = {
   key: readFileSync(process.env.PRIVATE_KEY_PATH, {encoding: "utf-8"}),
   cert: readFileSync(process.env.CERTIFICATE_PATH, {encoding: "utf-8"}),
