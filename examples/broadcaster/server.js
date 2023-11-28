@@ -11,12 +11,12 @@ function beforeOffer(peerConnection) {
   console.log("Before Offer");
   
 
-  logg = broadcaster.emit('newBroadcast', {
+  console.log("There was a listener: " + broadcaster.emit('newBroadcast', {
     audioTrack,
     videoTrack
-  });
+  }));
 
-  console.log("There was a listener: " + logg);
+  
 
   const { close } = peerConnection;
   peerConnection.close = function() {
