@@ -18,7 +18,7 @@ async function beforeAnswer(peerConnection) {
   });
 
   localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
-
+  console.log("got streams in broadcaster (idk)");
   localVideo.srcObject = localStream;
 
   // NOTE(mroberts): This is a hack so that we can get a callback when the

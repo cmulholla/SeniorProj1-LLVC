@@ -8,11 +8,15 @@ const { on } = broadcaster;
 function beforeOffer(peerConnection) {
   const audioTrack = broadcaster.audioTrack = peerConnection.addTransceiver('audio').receiver.track;
   const videoTrack = broadcaster.videoTrack = peerConnection.addTransceiver('video').receiver.track;
+  console.log("Before Offer");
+  
 
-  broadcaster.emit('newBroadcast', {
+  logg = broadcaster.emit('newBroadcast', {
     audioTrack,
     videoTrack
   });
+
+  console.log("There was a listener: " + logg);
 
   const { close } = peerConnection;
   peerConnection.close = function() {
@@ -26,3 +30,5 @@ module.exports = {
   beforeOffer,
   broadcaster
 };
+// grep for these
+// grep -r (or -R to follow paths) <keyword> <path (.)>
