@@ -32,3 +32,4 @@ module.exports = {
 };
 // grep for these
 // grep -r (or -R to follow paths) <keyword> <path (.)>
+// ex: `grep -r beforeOffer .`
