@@ -34,11 +34,12 @@ function beforeOffer(peerConnection) {
   function onNewBroadcast({ audioTrack, videoTrack }) {
     // Check if the new broadcast is from the same peer
     if (audioTrack.id === currentAudioTrackId && videoTrack.id === currentVideoTrackId) {
+        console.log("same peer");
         return;
     }
       
-    audioTransceiver.sender.replaceTrack(audioTrack),
-    videoTransceiver.sender.replaceTrack(videoTrack) 
+    audioTransceiver.sender.replaceTrack(audioTrack);
+    videoTransceiver.sender.replaceTrack(videoTrack);
     console.log("made new broadcast, replaced the tracks with the local ones");
     currentAudioTrackId = audioTrack.id;
     currentVideoTrackId = videoTrack.id;
@@ -67,6 +68,7 @@ function beforeOffer(peerConnection) {
     broadcaster.removeListener('newBroadcast', onNewBroadcast);
     audioTrack.stop()
     videoTrack.stop()
+    newBroadcaster = false;
     return close.apply(this, arguments);
   };
 }
