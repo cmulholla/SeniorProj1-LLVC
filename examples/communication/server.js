@@ -16,6 +16,10 @@ function beforeOffer(peerConnection) {
   
   const audioTrack = broadcaster.audioTrack = audioTransceiver.receiver.track;
   const videoTrack = broadcaster.videoTrack = videoTransceiver.receiver.track;
+
+  const originalAudioTrack = audioTrack;
+  const originalVideoTrack = videoTrack;
+
   console.log("audioTrack: " + audioTrack.id);
   console.log("videoTrack: " + videoTrack.id);
   console.log("peerConnection: " + peerConnection.id);
@@ -47,8 +51,8 @@ function beforeOffer(peerConnection) {
     if (!newBroadcaster) {
       console.log("rebroadcasting");
       broadcaster.emit('newBroadcast', {
-          audioTrack,
-          videoTrack
+        originalAudioTrack,
+        originalVideoTrack
       });
       newBroadcaster = true;
     }
