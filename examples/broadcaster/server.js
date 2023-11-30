@@ -3,7 +3,6 @@
 const { EventEmitter } = require('events');
 
 const broadcaster = new EventEmitter();
-const { on } = broadcaster;
 
 function beforeOffer(peerConnection) {
   const audioTrack = broadcaster.audioTrack = peerConnection.addTransceiver('audio').receiver.track;
@@ -15,8 +14,6 @@ function beforeOffer(peerConnection) {
     audioTrack,
     videoTrack
   }));
-
-  
 
   const { close } = peerConnection;
   peerConnection.close = function() {

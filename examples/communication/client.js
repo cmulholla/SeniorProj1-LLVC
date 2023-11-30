@@ -2,16 +2,18 @@
 
 const createExample = require('../../lib/browser/example');
 
-const description = 'Start a broadcast. Your stream will be forwarded to \
-multiple viewers. Although you can prototype such a system with node-webrtc, \
-you should consider using an \
-<a href="https://webrtcglossary.com/sfu/" target="_blank">SFU</a>.';
+const description = 'Connect to a stream.\nYou\'ll be able to see and hear anyone else connected to the server.';
 
 const localVideo = document.createElement('video');
 localVideo.autoplay = true;
 localVideo.muted = true;
 
+const remoteVideo = document.createElement('video');
+remoteVideo.autoplay = true;
+
 async function beforeAnswer(peerConnection) {
+
+  // setup the local stream
   const localStream = await window.navigator.mediaDevices.getUserMedia({
     audio: true,
     video: true
@@ -20,6 +22,10 @@ async function beforeAnswer(peerConnection) {
   localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
   console.log("got streams in broadcaster (idk)");
   localVideo.srcObject = localStream;
+
+  // setup the remote stream
+  const remoteStream = new MediaStream(peerConnection.getReceivers().map(receiver => receiver.track));
+  remoteVideo.srcObject = remoteStream;
 
   // NOTE(mroberts): This is a hack so that we can get a callback when the
   // RTCPeerConnection is closed. In the future, we can subscribe to
@@ -30,13 +36,17 @@ async function beforeAnswer(peerConnection) {
 
     localStream.getTracks().forEach(track => track.stop());
 
+    remoteVideo.srcObject = null;
+
     return close.apply(this, arguments);
   };
+
 }
 
-createExample('hello', description, { beforeAnswer });
+createExample('communicator', description, { beforeAnswer });
 
 const videos = document.createElement('div');
 videos.className = 'grid';
 videos.appendChild(localVideo);
+videos.appendChild(remoteVideo);
 document.body.appendChild(videos);
