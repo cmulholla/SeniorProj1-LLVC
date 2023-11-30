@@ -6,34 +6,43 @@ const broadcaster = new EventEmitter();
 const { on } = broadcaster;
 
 function beforeOffer(peerConnection) {
-  const audioTrack = broadcaster.audioTrack = peerConnection.addTransceiver('audio').receiver.track;
-  const videoTrack = broadcaster.videoTrack = peerConnection.addTransceiver('video').receiver.track;
   const audioTransceiver = peerConnection.addTransceiver('audio');
   const videoTransceiver = peerConnection.addTransceiver('video');
+
+  
+  // Mute the audio track on the sender side
+  audioTransceiver.muted = true;
+  console.log("audioTransceiver.muted: " + audioTransceiver.muted);
+  
+  const audioTrack = broadcaster.audioTrack = audioTransceiver.receiver.track;
+  const videoTrack = broadcaster.videoTrack = videoTransceiver.receiver.track;
+  console.log("audioTrack: " + audioTrack.id);
+  console.log("videoTrack: " + videoTrack.id);
   console.log("Before Offer");
   
   
-  console.log("There was a listener: " + broadcaster.emit('newBroadcast', {
+  const newBroadcaster = broadcaster.emit('newBroadcast', {
     audioTrack,
     videoTrack
-  }));
-
-
+  });
+  console.log("newBroadcaster: " + newBroadcaster);
   function onNewBroadcast({ audioTrack, videoTrack }) {
-    audioTransceiver.sender.replaceTrack(audioTrack),
-    videoTransceiver.sender.replaceTrack(videoTrack) 
-    console.log("made new broadcast, replaced the tracks with the local ones");
+      audioTransceiver.sender.replaceTrack(audioTrack),
+      videoTransceiver.sender.replaceTrack(videoTrack) 
+      console.log("made new broadcast, replaced the tracks with the local ones");
   }
 
   broadcaster.on('newBroadcast', onNewBroadcast);
-  if (broadcaster.audioTrack && broadcaster.videoTrack) {
-    console.log("found new broadcast, found both tracks");
-    onNewBroadcast(broadcaster);
+  if (broadcaster.audioTrack && broadcaster.videoTrack && newBroadcaster) {
+      console.log("found new broadcast, found both tracks");
+      onNewBroadcast(broadcaster);
+      console.log("iceConnectionState: " + peerConnection.iceConnectionState);
   }
 
 
   const { close } = peerConnection;
   peerConnection.close = function() {
+    console.log("peerConnection is being closed");
     broadcaster.removeListener('newBroadcast', onNewBroadcast);
     audioTrack.stop()
     videoTrack.stop()

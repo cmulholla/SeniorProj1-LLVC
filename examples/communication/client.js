@@ -12,6 +12,15 @@ const remoteVideo = document.createElement('video');
 remoteVideo.autoplay = true;
 
 async function beforeAnswer(peerConnection) {
+  
+  console.log("peerConnection in beforeAnswer: " + peerConnection);
+  // setup the remote stream
+  const remoteStream = new MediaStream(peerConnection.getReceivers().map(receiver => receiver.track));
+  remoteStream.getTracks().forEach(track => console.log(track.id, track.muted, track.kind));
+  remoteVideo.srcObject = remoteStream;
+
+  console.log("iceConnectionState in beforeAnswer: " + peerConnection.iceConnectionState);
+  console.log("remoteStream in beforeAnswer: " + remoteStream.getTracks());
 
   // setup the local stream
   const localStream = await window.navigator.mediaDevices.getUserMedia({
@@ -22,10 +31,6 @@ async function beforeAnswer(peerConnection) {
   localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
   console.log("got streams in broadcaster (idk)");
   localVideo.srcObject = localStream;
-
-  // setup the remote stream
-  const remoteStream = new MediaStream(peerConnection.getReceivers().map(receiver => receiver.track));
-  remoteVideo.srcObject = remoteStream;
 
   // NOTE(mroberts): This is a hack so that we can get a callback when the
   // RTCPeerConnection is closed. In the future, we can subscribe to
