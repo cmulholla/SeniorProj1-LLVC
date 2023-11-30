@@ -22,7 +22,7 @@ function beforeOffer(peerConnection) {
   console.log("Before Offer");
   
   
-  const newBroadcaster = broadcaster.emit('newBroadcast', {
+  let newBroadcaster = broadcaster.emit('newBroadcast', {
     audioTrack,
     videoTrack
   });
@@ -33,14 +33,24 @@ function beforeOffer(peerConnection) {
   console.log("newBroadcaster: " + newBroadcaster);
   function onNewBroadcast({ audioTrack, videoTrack }) {
     // Check if the new broadcast is from the same peer
-      if (audioTrack.id === currentAudioTrackId && videoTrack.id === currentVideoTrackId) {
-          return;
-      }
-      audioTransceiver.sender.replaceTrack(audioTrack),
-      videoTransceiver.sender.replaceTrack(videoTrack) 
-      console.log("made new broadcast, replaced the tracks with the local ones");
-      currentAudioTrackId = audioTrack.id;
-      currentVideoTrackId = videoTrack.id;
+    if (audioTrack.id === currentAudioTrackId && videoTrack.id === currentVideoTrackId) {
+        return;
+    }
+      
+    audioTransceiver.sender.replaceTrack(audioTrack),
+    videoTransceiver.sender.replaceTrack(videoTrack) 
+    console.log("made new broadcast, replaced the tracks with the local ones");
+    currentAudioTrackId = audioTrack.id;
+    currentVideoTrackId = videoTrack.id;
+    console.log("newBroadcaster2: " + newBroadcaster);
+    if (!newBroadcaster) {
+      console.log("rebroadcasting");
+      broadcaster.emit('newBroadcast', {
+          audioTrack,
+          videoTrack
+      });
+      newBroadcaster = true;
+    }
   }
   
   broadcaster.on('newBroadcast', onNewBroadcast);
