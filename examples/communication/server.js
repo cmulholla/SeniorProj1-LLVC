@@ -2,40 +2,26 @@
 
 const { EventEmitter } = require('events');
 
-const broadcaster = new EventEmitter();
-const { on } = broadcaster;
+let broadcaster1 = null;
+let broadcaster2 = null;
+let broadcaster = new EventEmitter();
+let newBroadcaster = false;
 
 function beforeOffer(peerConnection) {
   const audioTransceiver = peerConnection.addTransceiver('audio');
   const videoTransceiver = peerConnection.addTransceiver('video');
-
+  const audioTrack = broadcaster.audioTrack = audioTransceiver.receiver.track;
+  const videoTrack =  broadcaster.videoTrack = videoTransceiver.receiver.track;
   
   // Mute the audio track on the sender side
   audioTransceiver.muted = true;
   console.log("audioTransceiver.muted: " + audioTransceiver.muted);
-  
-  const audioTrack = broadcaster.audioTrack = audioTransceiver.receiver.track;
-  const videoTrack = broadcaster.videoTrack = videoTransceiver.receiver.track;
-
-  let originalAudioTrack = audioTrack;
-  let originalVideoTrack = videoTrack;
-
-  console.log("audioTrack: " + audioTrack.id);
-  console.log("videoTrack: " + videoTrack.id);
-  console.log("peerConnection: " + peerConnection.id);
-  console.log("Before Offer");
-  
-  
-  let newBroadcaster = broadcaster.emit('newBroadcast', {
-    audioTrack,
-    videoTrack
-  });
 
   let currentAudioTrackId = null;
   let currentVideoTrackId = null;
-
-  console.log("newBroadcaster: " + newBroadcaster);
-  function onNewBroadcast({ audioTrack, videoTrack }) {
+  
+  function onNewBroadcast({ audioTrack, videoTrack }, broadcaster) {
+    console.log("onNewBroadcast");
     // Check if the new broadcast is from the same peer
     if (!audioTrack && !videoTrack) {
       console.log("no tracks");
@@ -46,11 +32,18 @@ function beforeOffer(peerConnection) {
       return;
     }
 
-    console.log("newBroadcaster2: " + newBroadcaster);
-    if (!newBroadcaster) {
-      console.log("rebroadcasting");
+    const otherBroadcaster = broadcaster === broadcaster1 ? broadcaster2 : broadcaster1;
+    if (!audioTrack && !videoTrack) {
+        console.log("no tracks2");
+        return;
+    }
+    console.log("rebroadcasting");
+    console.log("emitting audioTrack: " + audioTrack.id);
+    console.log("emitting videoTrack: " + videoTrack.id);
+    console.log("otherBroadcaster: " + otherBroadcaster===broadcaster1 ? "broadcaster1" : "broadcaster2");
+    if (otherBroadcaster && !newBroadcaster) {
       newBroadcaster = true;
-      broadcaster.emit('newBroadcast', {
+      otherBroadcaster.emit('newBroadcast', {
         audioTrack,
         videoTrack
       });
@@ -63,11 +56,21 @@ function beforeOffer(peerConnection) {
     currentVideoTrackId = videoTrack.id;
   }
   
-  broadcaster.on('newBroadcast', onNewBroadcast);
-  if (broadcaster.audioTrack && broadcaster.videoTrack && newBroadcaster) {
-      console.log("found new broadcast, found both tracks");
-      onNewBroadcast(broadcaster);
-      console.log("iceConnectionState: " + peerConnection.iceConnectionState);
+  // When a new client connects
+  if (!broadcaster1) {
+    broadcaster1 = new EventEmitter();
+    console.log("found new broadcast1");
+    broadcaster1.on('newBroadcast', (tracks) => onNewBroadcast(tracks, broadcaster1));
+    broadcaster = broadcaster1;
+  } else if (!broadcaster2) {
+    broadcaster2 = new EventEmitter();
+    console.log("found new broadcast2");
+    broadcaster2.on('newBroadcast', (tracks) => onNewBroadcast(tracks, broadcaster2));
+    broadcaster = broadcaster2;
+    broadcaster1.emit('newBroadcast', {
+        audioTrack,
+        videoTrack
+    });
   }
 
 
@@ -75,6 +78,7 @@ function beforeOffer(peerConnection) {
   peerConnection.close = function() {
     console.log("peerConnection is being closed");
     broadcaster.removeListener('newBroadcast', onNewBroadcast);
+    broadcaster2.removeListener('newBroadcast', onNewBroadcast);
     audioTrack.stop()
     videoTrack.stop()
     newBroadcaster = false;
