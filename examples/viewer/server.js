@@ -1,6 +1,8 @@
 'use strict';
 
-const { broadcaster } = require('../broadcaster/server')
+const { EventEmitter } = require('events');
+
+const broadcaster = new EventEmitter();
 
 function beforeOffer(peerConnection) {
   const audioTransceiver = peerConnection.addTransceiver('audio');
