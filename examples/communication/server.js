@@ -67,7 +67,7 @@ function beforeOffer(peerConnection) {
     console.log("found new broadcast2");
     broadcaster2.on('newBroadcast', (tracks) => onNewBroadcast(tracks, broadcaster2));
     broadcaster = broadcaster2;
-    broadcaster1.emit('newBroadcast', {
+    broadcaster2.emit('newBroadcast', {
         audioTrack,
         videoTrack
     });
