@@ -13,7 +13,7 @@ remoteVideo.autoplay = true;
 async function beforeAnswer(peerConnection) {
   const remoteStream = new MediaStream(peerConnection.getReceivers().map(receiver => receiver.track));
   remoteVideo.srcObject = remoteStream;
-
+  
   // NOTE(mroberts): This is a hack so that we can get a callback when the
   // RTCPeerConnection is closed. In the future, we can subscribe to
   // "connectionstatechange" events.

@@ -9,11 +9,13 @@ function beforeOffer(peerConnection) {
   const videoTrack = broadcaster.videoTrack = peerConnection.addTransceiver('video').receiver.track;
   console.log("Before Offer");
   
-
-  console.log("There was a listener: " + broadcaster.emit('newBroadcast', {
+  
+  broadcaster.emit('newBroadcast', {
     audioTrack,
     videoTrack
-  }));
+  });
+  
+  
 
   const { close } = peerConnection;
   peerConnection.close = function() {

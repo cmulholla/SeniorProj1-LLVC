@@ -2,7 +2,7 @@
 
 const createExample = require('../../lib/browser/example');
 
-const description = 'Connect to a stream.\nYou\'ll be able to see and hear whoever is in comm2.';
+const description = 'Connect to a stream.\nYou\'ll be able to see and hear whoever is in comm1.';
 
 const localVideo = document.createElement('video');
 localVideo.autoplay = true;
