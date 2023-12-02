@@ -9,8 +9,10 @@ function beforeOffer(peerConnection) {
   const videoTransceiver = peerConnection.addTransceiver('video');
   const audioTrack = broadcaster1.audioTrack = audioTransceiver.receiver.track;
   const videoTrack =  broadcaster1.videoTrack = videoTransceiver.receiver.track;
-  
+  console.log("audioTrack in beforeOffer " + audioTrack.id);
+
   function onNewBroadcast({ audioTrack, videoTrack }) {
+    console.log("audioTrack in onNewBroadcast: " + audioTrack.id);
     audioTransceiver.sender.replaceTrack(audioTrack),
     videoTransceiver.sender.replaceTrack(videoTrack) 
     console.log("made new broadcast, replaced the tracks with the local ones");
