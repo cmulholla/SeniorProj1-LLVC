@@ -26,6 +26,9 @@ function beforeOffer(peerConnection) {
     console.log("found new broadcast, found both tracks");
     onNewBroadcast(broadcaster1);
   }
+  else if (broadcaster1.audioTrack && !broadcaster1.videoTrack) {
+    console.log("only found audio track");
+  }
   
   console.log("There was a listener: " + broadcaster.emit('newBroadcast', {
     audioTrack,
