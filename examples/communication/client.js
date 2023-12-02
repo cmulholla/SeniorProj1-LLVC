@@ -29,6 +29,8 @@ async function beforeAnswer(peerConnection) {
   });
 
   localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+  console.log("local audio streams: " + localStream.getAudioTracks()[0].id);
+  console.log("local video streams: " + localStream.getVideoTracks()[0].id);
   console.log("got streams in broadcaster (idk)");
   localVideo.srcObject = localStream;
 

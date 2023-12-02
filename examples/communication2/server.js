@@ -2,8 +2,7 @@
 // TODO: try to store all the tracks inside of a single broadcaster and filter through what I need
 const { EventEmitter } = require('events');
 
-const broadcaster1 = new EventEmitter();
-const { broadcaster } = require('../communication/server')
+const { broadcaster, broadcaster1 } = require('../communication/server');
 
 function beforeOffer(peerConnection) {
   const audioTransceiver = peerConnection.addTransceiver('audio');

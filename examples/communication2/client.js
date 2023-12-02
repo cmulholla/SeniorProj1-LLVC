@@ -16,7 +16,7 @@ async function beforeAnswer(peerConnection) {
   console.log("peerConnection in beforeAnswer: " + peerConnection);
   // setup the remote stream
   const remoteStream = new MediaStream(peerConnection.getReceivers().map(receiver => receiver.track));
-  remoteStream.getTracks().forEach(track => console.log(track.id, track.muted, track.kind));
+  remoteStream.getTracks().forEach(track => console.log(track.id, track.muted, track.kind, track.label));
   remoteVideo.srcObject = remoteStream;
 
   console.log("iceConnectionState in beforeAnswer: " + peerConnection.iceConnectionState);
