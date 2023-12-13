@@ -34,7 +34,9 @@ This folder is in the main project folder and has a few files in it:
 - key.pem
 
 .env contents:
+```d
 PEMpassphrase=##########
 PORT=8443
 PRIVATE_KEY_PATH=./local/key.pem
 CERTIFICATE_PATH=./local/cert.pem
+```
