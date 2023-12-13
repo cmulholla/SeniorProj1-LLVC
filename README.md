@@ -3,6 +3,8 @@ Low Latency Voice Call server with nodejs and webrtc
 
 If you simply want to view the final product website, I'll have it running from time to time on: https://12d93698.nip.io/broadcaster/index.html
 
+This tutorial will help you in your journey to try to run this project locally. If you want to run this project on an AWS server like I did, godspeed.
+
 ## Setup
 Clone the project, I would suggest Visual Studio Code.
 
@@ -40,3 +42,6 @@ PORT=8443
 PRIVATE_KEY_PATH=./local/key.pem
 CERTIFICATE_PATH=./local/cert.pem
 ```
+
+Finally, you might be able to run this project locally using `node index.js`. 
+If you have any issues, you can contact my consultant [here](https://chat.openai.com)
